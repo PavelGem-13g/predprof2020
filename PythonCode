@@ -1,0 +1,44 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import pyrebase
+import json
+ 
+ 
+class User:
+    def __init__(self, full_name, dob, deparment, position, e_sign, level):
+        self.full_name = full_name
+        self.dob = dob
+        self.department = deparment
+        self.position = position
+        self.e_sign = e_sign
+        self.level = level
+ 
+ 
+config = {
+    "apiKey": "",
+    "authDomain": "",
+    "databaseURL": "",
+    "storageBucket": ""
+}
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
+ 
+#jsonStr = json.dumps(nuser.__dict__)
+choice = int(input("выбреите, что хотите делать 1-зарегистрировать пользователя: "))
+ 
+if choice==1:
+ 
+    nuser = User(full_name=input("Введите полное имя сотрудника для регистрации:"),
+             dob=input("Введите дату рождения сотрудника:"),
+             deparment=input("Введите отдел, в котором числится сотрудник:"),
+             position=input("Введите должность сотрудника:"),
+             e_sign=input("Введите образец электронной подписи сотрудника:"),
+             level=input(
+                 "Введите уровень доступа сотрудника 1-Ген. директор, 2-Зам начальник отдела, 3-Простой сотрудник:")
+             )
+ 
+    print(nuser.__dict__)
+    key = db.generate_key()
+    print(key)
+    db.child("users").child(key).set(nuser.__dict__)
+    db.child("departments").child(nuser.department).push(key)
